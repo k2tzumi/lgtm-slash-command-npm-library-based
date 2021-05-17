@@ -1,0 +1,25 @@
+{
+    "compilerOptions": {
+        "target": "ES2019",
+        "lib": [
+            "es2019",
+        ],
+        "outDir": "./dist",
+        "rootDir": "./src",
+        "module": "esnext",
+        "downlevelIteration": true,
+        "strict": false,
+        "noUnusedLocals": true,
+        "esModuleInterop": true,
+        "declaration": true,
+        "moduleResolution": "node",
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "typeRoots": [
+            "node_modules/@types"
+        ],
+    },
+    "include": [
+        "./src/**/*"
+    ]
+}
