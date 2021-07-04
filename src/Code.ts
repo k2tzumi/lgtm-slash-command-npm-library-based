@@ -3,31 +3,33 @@ import { SlackHandler } from "./SlackHandler";
 import { SlashCommandFunctionResponse } from "./SlashCommandHandler";
 import { SlackWebhooks } from "./SlackWebhooks";
 import { DuplicateEventError } from "./CallbackEventHandler";
-import { JobBroker } from "./JobBroker";
 import { CustomImageSearchClient, ImageItem } from "./CustomImageSearchClient";
 import { imageSize } from "image-size";
 import Jimp from "jimp";
+// import { JobBroker } from "apps-script-jobqueue";
 
 type TextOutput = GoogleAppsScript.Content.TextOutput;
 type DoPost = GoogleAppsScript.Events.DoPost;
 type Commands = Slack.SlashCommand.Commands;
 type Blob = GoogleAppsScript.Base.Blob;
 
-function asyncLogging(): void {
-  const jobBroker: JobBroker = new JobBroker();
-  jobBroker.consumeJob((parameter: Record<string, any>) => {
+const asyncLogging = (): void => {
+  JobBroker.consumeAsyncJob((parameter: Record<string, any>) => {
     console.info(JSON.stringify(parameter));
-  });
-}
+  }, "asyncLogging");
+};
 
 const COMMAND = "/lgtm";
 
-function doPost(e: DoPost): TextOutput {
-  const properties = PropertiesService.getScriptProperties();
-  const VERIFICATION_TOKEN: string = properties.getProperty(
-    "VERIFICATION_TOKEN"
-  );
+const properties = PropertiesService.getScriptProperties();
+const VERIFICATION_TOKEN: string = properties.getProperty("VERIFICATION_TOKEN");
 
+/**
+ * execute post method.
+ * @param e
+ * @returns TextOutput
+ */
+function doPost(e: DoPost): TextOutput {
   const slackHandler = new SlackHandler(VERIFICATION_TOKEN);
 
   slackHandler.addCommandListener(COMMAND, executeSlashCommand);
@@ -42,7 +44,7 @@ function doPost(e: DoPost): TextOutput {
     if (exception instanceof DuplicateEventError) {
       return ContentService.createTextOutput();
     } else {
-      new JobBroker().enqueue(asyncLogging, {
+      JobBroker.enqueueAsyncJob(asyncLogging, {
         message: exception.message,
         stack: exception.stack,
       });
@@ -59,7 +61,7 @@ function executeSlashCommand(commands: Commands): SlashCommandFunctionResponse {
     case "help":
       return createUsageResponse();
     default:
-      new JobBroker().enqueue(executeCommandLgtm, commands);
+      JobBroker.enqueueAsyncJob(executeCommandLgtm, commands);
 
       return {
         response_type: "ephemeral",
@@ -76,19 +78,22 @@ function createUsageResponse(): SlashCommandFunctionResponse {
 }
 
 const executeCommandLgtm = (): void => {
-  const jobBroker: JobBroker = new JobBroker();
-  jobBroker.consumeJob((commands: Commands) => {
+  JobBroker.consumeAsyncJob((commands: Commands) => {
     const webhook = new SlackWebhooks(commands.response_url);
-    const url = commands.text.match(/https?:\/\//);
+    const url = commands.text.match(
+      new RegExp("((https?|ftp)(://[-_.!~*'()a-zA-Z0-9;/?:@&=+$,%#]+))")
+    );
 
     if (url) {
       webhook.sendText(createLgtmResponse(url[0]));
     } else {
       webhook.sendText(
-        createLgtmResponse(pickupImage(executeSearch(commands.text)).link)
+        createLgtmResponse(
+          pickupImage(executeSearch(commands.text)).thumbnailLink
+        )
       );
     }
-  });
+  }, "executeCommandLgtm");
 };
 
 function createLgtmResponse(url: string): string {
@@ -100,18 +105,20 @@ function createLgtmResponse(url: string): string {
       Jimp.MIME_PNG,
       `lgtm-${url}.png`
     );
+
+    console.log(`blob.name :${blob.getName()}`);
+
     return uploadDrive(blob, `origin: ${url}`);
   })();
 
   return `![LGTM](${driveUrl})`;
 }
 
-function executeSearch(word: string): ImageItem[] {
-  const properties = PropertiesService.getScriptProperties();
-  const GOOGLE_API_KEY = properties.getProperty("GOOGLE_API_KEY") || "";
-  const CUSTOM_SEARCH_ENGINE_ID =
-    properties.getProperty("CUSTOM_SEARCH_ENGINE_ID") || "";
+const GOOGLE_API_KEY = properties.getProperty("GOOGLE_API_KEY") || "";
+const CUSTOM_SEARCH_ENGINE_ID =
+  properties.getProperty("CUSTOM_SEARCH_ENGINE_ID") || "";
 
+function executeSearch(word: string): ImageItem[] {
   const cient = new CustomImageSearchClient(
     GOOGLE_API_KEY,
     CUSTOM_SEARCH_ENGINE_ID

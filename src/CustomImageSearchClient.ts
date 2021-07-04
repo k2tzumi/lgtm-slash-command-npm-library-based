@@ -5,6 +5,9 @@ interface ImageItem {
   mime: string;
   height: number;
   width: number;
+  thumbnailLink: string;
+  thumbnailHeight: number;
+  thumbnailWidth: number;
 }
 
 /**
@@ -17,7 +20,13 @@ const LANG = "lang_ja";
 const NUM = 10;
 
 class CustomImageSearchClient {
-  public constructor(private apiKey: string, private searchEngineId: string) {}
+  private apiKey: string;
+  private searchEngineId: string;
+
+  public constructor(apiKey: string, searchEngineId: string) {
+    this.apiKey = apiKey;
+    this.searchEngineId = searchEngineId;
+  }
 
   /**
    * @param keyword Search word
@@ -49,6 +58,9 @@ class CustomImageSearchClient {
             mime: item.mime,
             width: item.image.height,
             height: item.image.height,
+            thumbnailLink: item.thumbnailLink,
+            thumbnailHeight: item.thumbnailHeight,
+            thumbnailWidth: item.thumbnailWidth,
           } as ImageItem;
         });
       }

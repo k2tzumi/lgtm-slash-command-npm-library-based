@@ -1763,10 +1763,10 @@
   "resolved" "https://registry.npmjs.org/@types/estree/-/estree-0.0.46.tgz"
   "version" "0.0.46"
 
-"@types/google-apps-script@^1.0.31":
-  "integrity" "sha512-tgsJKk20fwFoh0Ml4Li3pqKQ5uu3Nr3XeRsee2+pkPGrJxDlA3qsHAA2q3/HRv5yi9U6QVvdGwJ16USnmA7wAA=="
-  "resolved" "https://registry.npmjs.org/@types/google-apps-script/-/google-apps-script-1.0.31.tgz"
-  "version" "1.0.31"
+"@types/google-apps-script@^1.0.31", "@types/google-apps-script@^1.0.34":
+  "integrity" "sha512-6O9rMu9BzkB32Sc43BKWT7eq/FmXOUbcZbeNCSLOQI51kBcyITDDEHPfX0f+YiBT+iCUhqrA70BN2ef58RGzHg=="
+  "resolved" "https://registry.npmjs.org/@types/google-apps-script/-/google-apps-script-1.0.34.tgz"
+  "version" "1.0.34"
 
 "@types/graceful-fs@^4.1.2":
   "integrity" "sha512-mWA/4zFQhfvOA8zWkXobwJvBD7vzcxgrOQ0J5CH1votGqdq9m7+FwtGaqyCZqC3NyyBkc9z4m+iry4LlqcMWJg=="
@@ -2215,6 +2215,12 @@
   dependencies:
     "normalize-path" "^3.0.0"
     "picomatch" "^2.0.4"
+
+"apps-script-jobqueue@github:k2tzumi/apps-script-jobqueue":
+  "resolved" "git+ssh://git@github.com/k2tzumi/apps-script-jobqueue.git#ee93f025a601394cf06ef99d58bca0786f3fdff4"
+  "version" "0.0.1"
+  dependencies:
+    "@types/google-apps-script" "^1.0.34"
 
 "argparse@^1.0.7":
   "integrity" "sha512-o5Roy6tNG4SL/FOkCAN6RzjiakZS25RLYFrcMttJqbdd8BWrnA+fGz57iN5Pb06pvBGvl5gQ0B48dJlslXvoTg=="

@@ -60,7 +60,7 @@ describe('InteractivityHandler', () => {
         it('success', () => {
             const handler = new InteractivityHandler('token');
 
-            handler.addListener('type', (interaction: Interaction): { trigger_id: "dummy" } => { return {} });
+            handler.addListener('type', (interaction: Interaction): { trigger_id: "dummy" } => { return { trigger_id: "dummy" } });
         });
     });
 });

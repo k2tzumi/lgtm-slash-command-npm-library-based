@@ -5,10 +5,12 @@ type TextOutput = GoogleAppsScript.Content.TextOutput;
 abstract class SlackBaseHandler<T> {
   protected cache: Cache;
   protected listners: Map<string, T>;
+  protected verificationToken: string;
 
-  public constructor(private verificationToken: string) {
+  public constructor(verificationToken: string) {
     this.cache = CacheService.getScriptCache();
     this.listners = new Map<string, T>();
+    this.verificationToken = verificationToken;
   }
 
   public abstract handle(

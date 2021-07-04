@@ -5,7 +5,11 @@ type HTTPResponse = GoogleAppsScript.URL_Fetch.HTTPResponse;
 type Payload = GoogleAppsScript.URL_Fetch.Payload;
 
 class SlackWebhooks {
-  public constructor(private incomingWebhookUrl: string) {}
+  private incomingWebhookUrl: string;
+
+  public constructor(incomingWebhookUrl: string) {
+    this.incomingWebhookUrl = incomingWebhookUrl;
+  }
 
   public invoke(payload: Payload): boolean {
     let response: HTTPResponse;

@@ -52,7 +52,6 @@ describe('Code', () => {
         it('success', async () => {
             response = fs.readFileSync(__dirname + '/fixtures/image.png');
             fs.writeFileSync('/var/tmp/output.png', await createLgtmImage('https://placehold.jp/150x150.png'));
-
         });
     });
 });
