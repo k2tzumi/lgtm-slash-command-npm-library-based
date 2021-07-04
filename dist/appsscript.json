@@ -1,7 +1,13 @@
 {
   "timeZone": "Asia/Tokyo",
   "dependencies": {
-    "libraries": []
+      "libraries": [
+        {
+          "userSymbol": "JobBroker",
+          "libraryId": "11cz2CGI2m3W1_JS7PwnxL2_6hkvtj47ynFuxKDDAAUwh3jP04sYnigg8",
+          "version": "20"
+        }
+      ]
   },
   "webapp": {
     "access": "ANYONE_ANONYMOUS",
@@ -10,6 +16,8 @@
   "exceptionLogging": "STACKDRIVER",
   "urlFetchWhitelist": [
     "https://www.googleapis.com/",
+    "https://*.gstatic.com/",
+    "https://placehold.jp/",
     "https://slack.com/",
     "https://api.slack.com/",
     "https://hooks.slack.com/"
